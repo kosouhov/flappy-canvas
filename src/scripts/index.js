@@ -37,9 +37,14 @@ import '../styles/index.scss';
 		CONTEXT.drawImage(background, 0, 0, background.width * zoom, background.height * zoom);
 		CONTEXT.drawImage(bird, birdPosition.x, birdPosition.y, bird.width * zoom, bird.height * zoom);
 		for (var i = 0; i < pipes.length; i++) {
-			pipes[i]
 			CONTEXT.drawImage(pipeTop, pipes[i].x, pipes[i].y, pipeTop.width * zoom, pipeTop.height * zoom);
 			CONTEXT.drawImage(pipeBottom, pipes[i].x, pipes[i].y + pipeTop.height * zoom + gap, pipeBottom.width * zoom, pipeBottom.height * zoom);
+			//
+			if ((birdPosition.x + bird.width * zoom > pipes[i].x) && (birdPosition.x < pipes[i].x + pipeTop.width * zoom)) {
+				if ((birdPosition.y < pipes[i].y + pipeTop.height * zoom) || (birdPosition.y + bird.height * zoom > pipes[i].y + pipeTop.height * zoom + gap)) {
+					console.log('game over')
+				}
+			}
 			pipes[i].x -= 2;
 			if (pipes[i].x == 128) {
 				pipes.push({
