@@ -8,25 +8,23 @@ import '../styles/index.scss';
 		pipeTop = new Image(),
 		pipeBottom = new Image(),
 		background = new Image(),
+		m = document.getElementById('message'),
+		points = 0,
 		zoom = 2,
 		gap = 100,
-		birdPosition = {x: 0, y: 0},
+		birdPosition = {},
 		v = 0, //начальная скорость прыжка
 		a = 0.25, //ускорение падения
 		t = 0, //таймер прыжка
 		y = 0, //начальная позиция прыжка
+		gameState = 'startScreen',
 		pipes = [];
 
-	pipes[0] = {
-		x: CANVAS.width,
-		y: -170
-	};
 	bird.src = require('../images/bird-center.png');
 	floor.src = require('../images/floor.png');
 	pipeTop.src = require('../images/pipe-top.png');
 	pipeBottom.src = require('../images/pipe-bottom.png');
 	background.src = require('../images/background.png');
-	birdPosition.x = (CANVAS.width - bird.width * zoom) / 2;
 	CONTEXT.mozImageSmoothingEnabled = false;
 	CONTEXT.webkitImageSmoothingEnabled = false;
 	CONTEXT.msImageSmoothingEnabled = false;
@@ -42,7 +40,8 @@ import '../styles/index.scss';
 			//
 			if ((birdPosition.x + bird.width * zoom > pipes[i].x) && (birdPosition.x < pipes[i].x + pipeTop.width * zoom)) {
 				if ((birdPosition.y < pipes[i].y + pipeTop.height * zoom) || (birdPosition.y + bird.height * zoom > pipes[i].y + pipeTop.height * zoom + gap)) {
-					console.log('game over')
+					gameState = 'gameOver';
+					message('Game over');
 				}
 			}
 			pipes[i].x -= 2;
@@ -51,10 +50,12 @@ import '../styles/index.scss';
 					x: CANVAS.width,
 					y: Math.floor(Math.random() * 200) - 270
 				});
+				points++;
+				message(points + ' points');
 			}
 		}
 		CONTEXT.drawImage(floor, 0, CANVAS.height - floor.height * zoom, floor.width * zoom, floor.height * zoom);
-		requestAnimationFrame(render);
+		gameState == 'gameProcess' ? requestAnimationFrame(render) : false;
 		t += 1;
 	}
 
@@ -64,7 +65,47 @@ import '../styles/index.scss';
 		y = birdPosition.y;
 	}
 
-	document.addEventListener('keydown', bounce);
+	const setZero = () => {
+		birdPosition = {
+			x: (CANVAS.width - bird.width * zoom) / 2,
+			y: (CANVAS.height - bird.height * zoom) / 2
+		};
+		points = 0;
+		pipes = [];
+		pipes[0] = {
+			x: CANVAS.width,
+			y: -170
+		};
+		v = 0;
+		t = 0;
+		y = birdPosition.y;
+	}
 
-	background.onload = render;
+	const keydown = () => {
+		switch (gameState) {
+			case 'startScreen':
+				gameState = 'gameProcess';
+				setZero();
+				render();
+				break;
+			case 'gameProcess':
+				bounce();
+				break;
+			case 'gameOver':
+				gameState = 'startScreen';
+				setZero();
+				render();
+		}
+	}
+
+	const message = (mess) => {
+		m.innerHTML = mess;
+	}
+
+	background.onload = function() {
+		setZero();
+		render();
+		document.addEventListener('keydown', keydown);
+	}
+
 })();
