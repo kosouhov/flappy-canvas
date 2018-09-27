@@ -14,7 +14,7 @@ import '../styles/index.scss';
 		gap = 100,
 		birdPosition = {},
 		v = 0, //начальная скорость прыжка
-		a = 0.25, //ускорение падения
+		a = 0.35, //ускорение падения
 		t = 0, //таймер прыжка
 		y = 0, //начальная позиция прыжка
 		gameState = 'startScreen',
@@ -106,7 +106,7 @@ import '../styles/index.scss';
 		setZero();
 		render();
 		document.addEventListener('keydown', keydown);
-		document.addEventListener('click', keydown);
+		document.addEventListener('touchstart', keydown);
 	}
 
 })();
