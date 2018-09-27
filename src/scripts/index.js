@@ -83,13 +83,13 @@ import '../styles/index.scss';
 
 	const keydown = () => {
 		switch (gameState) {
+			case 'gameProcess':
+				bounce();
+				break;
 			case 'startScreen':
 				gameState = 'gameProcess';
 				setZero();
 				render();
-				break;
-			case 'gameProcess':
-				bounce();
 				break;
 			case 'gameOver':
 				gameState = 'startScreen';
@@ -106,6 +106,7 @@ import '../styles/index.scss';
 		setZero();
 		render();
 		document.addEventListener('keydown', keydown);
+		document.addEventListener('click', keydown);
 	}
 
 })();
